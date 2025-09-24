@@ -663,7 +663,7 @@ resource "juju_integration" "opentelemetry_collector_certificates" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.certificates
+    endpoint = module.opentelemetry_collector.endpoints.receive_ca_cert
   }
 }
 
