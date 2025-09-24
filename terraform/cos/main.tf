@@ -213,7 +213,7 @@ resource "juju_integration" "mimir_grafana_source" {
   }
 }
 
-resource "juju_integration" "mimir_tracing_opentelemetry_collector_tracing_provider" {
+resource "juju_integration" "mimir_tracing_opentelemetry_collector_send_traces" {
   model = var.model
 
   application {
@@ -223,7 +223,7 @@ resource "juju_integration" "mimir_tracing_opentelemetry_collector_tracing_provi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.tracing_provider
+    endpoint = module.opentelemetry_collector.endpoints.send_traces
   }
 }
 
@@ -253,7 +253,7 @@ resource "juju_integration" "mimir_logging_consumer_opentelemetry_collector_logg
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.logging_provider
+    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
   }
 }
 
@@ -298,7 +298,7 @@ resource "juju_integration" "loki_logging_consumer_opentelemetry_collector_loggi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.logging_provider
+    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
   }
 }
 
@@ -312,7 +312,7 @@ resource "juju_integration" "loki_logging_opentelemetry_collector_logging_consum
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.logging_consumer
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -326,7 +326,7 @@ resource "juju_integration" "loki_tracing_opentelemetry_collector_traicing_provi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.tracing_provider
+    endpoint = module.opentelemetry_collector.endpoints.send_traces
   }
 }
 
@@ -601,7 +601,7 @@ resource "juju_integration" "grafana_tracing_opentelemetry_collector_traicing_pr
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.tracing_provider
+    endpoint = module.opentelemetry_collector.endpoints.send_traces
   }
 }
 
