@@ -28,7 +28,7 @@ module "opentelemetry_collector" {
   source   = "git::https://github.com/canonical/opentelemetry-collector-operator//terraform"
   app_name = "opentelemetry-collector"
   model    = var.model
-  channel  = var.channel
+  channel  = "2/edge"
   revision = var.opentelemetry_collector_revision
 }
 
