@@ -355,7 +355,7 @@ resource "juju_integration" "tempo_tracing_opentelemetry_collector_tracing" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_tracing
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
