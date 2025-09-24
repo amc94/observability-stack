@@ -16,7 +16,7 @@ output "components" {
     alertmanager  = module.alertmanager
     catalogue     = module.catalogue
     grafana       = module.grafana
-    grafana_agent = module.grafana_agent
+    grafana_agent = module.opentelemetry_collector
     loki          = module.loki
     mimir         = module.mimir
     ssc           = module.ssc
