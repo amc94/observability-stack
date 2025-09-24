@@ -223,7 +223,7 @@ resource "juju_integration" "mimir_tracing_opentelemetry_collector_send_traces" 
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_charm_traces
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
@@ -253,7 +253,7 @@ resource "juju_integration" "mimir_logging_consumer_opentelemetry_collector_logg
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -298,7 +298,7 @@ resource "juju_integration" "loki_logging_consumer_opentelemetry_collector_loggi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -312,11 +312,11 @@ resource "juju_integration" "loki_logging_opentelemetry_collector_logging_consum
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
+    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
   }
 }
 
-resource "juju_integration" "loki_tracing_opentelemetry_collector_traicing_provider" {
+resource "juju_integration" "loki_tracing_opentelemetry_collector_tracing_provider" {
   model = var.model
 
   application {
@@ -326,7 +326,7 @@ resource "juju_integration" "loki_tracing_opentelemetry_collector_traicing_provi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_charm_traces
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
@@ -355,7 +355,7 @@ resource "juju_integration" "tempo_tracing_opentelemetry_collector_tracing" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_traces
+    endpoint = module.opentelemetry_collector.endpoints.send_traces
   }
 }
 
@@ -383,7 +383,7 @@ resource "juju_integration" "tempo_logging_opentelemetry_collector_logging_provi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
+    endpoint = module.opentelemetry_collector.endpoints.receive_loki_logs
   }
 }
 
@@ -601,7 +601,7 @@ resource "juju_integration" "grafana_tracing_opentelemetry_collector_traicing_pr
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.send_charm_traces
+    endpoint = module.opentelemetry_collector.endpoints.receive_traces
   }
 }
 
@@ -663,7 +663,7 @@ resource "juju_integration" "opentelemetry_collector_certificates" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.receive_ca_cert
+    endpoint = module.opentelemetry_collector.endpoints.receive_server_cert
   }
 }
 
