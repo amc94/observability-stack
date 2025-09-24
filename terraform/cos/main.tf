@@ -648,7 +648,7 @@ resource "juju_integration" "grafana_certificates" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.receive_ca_cert
+    endpoint = module.grafana.endpoints.certificates
   }
 }
 
