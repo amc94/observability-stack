@@ -25,7 +25,7 @@ module "grafana" {
 }
 
 module "opentelemetry_collector" {
-  source   = "git::https://github.com/amc94/opentelemetry-collector-operator//terraform"
+  source   = "git::https://github.com/canonical/opentelemetry-collector-operator//terraform"
   app_name = "opentelemetry-collector"
   model    = var.model
   channel  = var.channel
