@@ -355,7 +355,7 @@ resource "juju_integration" "tempo_tracing_opentelemetry_collector_tracing" {
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.tracing
+    endpoint = module.opentelemetry_collector.endpoints.receive_tracing
   }
 }
 
@@ -383,7 +383,7 @@ resource "juju_integration" "tempo_logging_opentelemetry_collector_logging_provi
 
   application {
     name     = module.opentelemetry_collector.app_name
-    endpoint = module.opentelemetry_collector.endpoints.logging_provider
+    endpoint = module.opentelemetry_collector.endpoints.send_loki_logs
   }
 }
 
@@ -648,7 +648,7 @@ resource "juju_integration" "grafana_certificates" {
 
   application {
     name     = module.grafana.app_name
-    endpoint = module.grafana.endpoints.certificates
+    endpoint = module.grafana.endpoints.receive_ca_cert
   }
 }
 
