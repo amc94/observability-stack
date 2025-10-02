@@ -99,7 +99,7 @@ module "mimir" {
 module "opentelemetry_collector" {
   source             = "git::https://github.com/canonical/opentelemetry-collector-k8s-operator//terraform"
   app_name           = var.opentelemetry_collector.app_name
-  channel            = var.channel
+  channel            = "2/edge"
   config             = var.opentelemetry_collector.config
   constraints        = var.opentelemetry_collector.constraints
   model              = var.model
