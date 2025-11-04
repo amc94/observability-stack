@@ -14,7 +14,7 @@ variable "channel" {
   type        = string
 }
 
-variable "model_uuid" {
+variable "model" {
   description = "Reference to an existing model resource or data source for the model to deploy to"
   type        = string
 }

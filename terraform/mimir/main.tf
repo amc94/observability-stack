@@ -1,6 +1,6 @@
 resource "juju_secret" "mimir_s3_credentials_secret" {
-  model_uuid = var.model_uuid
-  name       = "mimir_s3_credentials"
+  model = var.model
+  name  = "mimir_s3_credentials"
   value = {
     access-key = var.s3_access_key
     secret-key = var.s3_secret_key
@@ -9,7 +9,7 @@ resource "juju_secret" "mimir_s3_credentials_secret" {
 }
 
 resource "juju_access_secret" "mimir_s3_secret_access" {
-  model_uuid = var.model_uuid
+  model = var.model
   applications = [
     juju_application.s3_integrator.name
   ]
@@ -24,7 +24,7 @@ resource "juju_application" "s3_integrator" {
     credentials = "secret:${juju_secret.mimir_s3_credentials_secret.secret_id}"
   }, var.s3_integrator_config)
   constraints        = var.s3_integrator_constraints
-  model_uuid         = var.model_uuid
+  model              = var.model
   name               = var.s3_integrator_name
   storage_directives = var.s3_integrator_storage_directives
   trust              = true
@@ -38,19 +38,19 @@ resource "juju_application" "s3_integrator" {
 }
 
 module "mimir_coordinator" {
-  source             = "git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/mimir-coordinator-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = "mimir"
   channel            = var.channel
   config             = var.coordinator_config
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=mimir,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.coordinator_revision
   storage_directives = var.coordinator_storage_directives
   units              = var.coordinator_units
 }
 
 module "mimir_backend" {
-  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform?ref=tf-provider-v0"
   depends_on = [module.mimir_coordinator]
 
   app_name    = var.backend_name
@@ -59,14 +59,14 @@ module "mimir_backend" {
   config = merge({
     role-backend = true
   }, var.backend_config)
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
   units              = var.backend_units
 }
 
 module "mimir_read" {
-  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform?ref=tf-provider-v0"
   depends_on = [module.mimir_coordinator]
 
   app_name = var.read_name
@@ -75,14 +75,14 @@ module "mimir_read" {
     role-read = true
   }, var.read_config)
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.read_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
   units              = var.read_units
 }
 
 module "mimir_write" {
-  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/mimir-worker-k8s-operator//terraform?ref=tf-provider-v0"
   depends_on = [module.mimir_coordinator]
 
   app_name = var.write_name
@@ -91,7 +91,7 @@ module "mimir_write" {
     role-write = true
   }, var.write_config)
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=${var.write_name},anti-pod.topology-key=kubernetes.io/hostname" : var.worker_constraints
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
   units              = var.write_units
@@ -100,7 +100,7 @@ module "mimir_write" {
 # -------------- # Integrations --------------
 
 resource "juju_integration" "coordinator_to_s3_integrator" {
-  model_uuid = var.model_uuid
+  model = var.model
   application {
     name     = juju_application.s3_integrator.name
     endpoint = "s3-credentials"
@@ -113,7 +113,7 @@ resource "juju_integration" "coordinator_to_s3_integrator" {
 }
 
 resource "juju_integration" "coordinator_to_read" {
-  model_uuid = var.model_uuid
+  model = var.model
 
   application {
     name     = module.mimir_coordinator.app_name
@@ -127,7 +127,7 @@ resource "juju_integration" "coordinator_to_read" {
 }
 
 resource "juju_integration" "coordinator_to_write" {
-  model_uuid = var.model_uuid
+  model = var.model
 
   application {
     name     = module.mimir_coordinator.app_name
@@ -141,7 +141,7 @@ resource "juju_integration" "coordinator_to_write" {
 }
 
 resource "juju_integration" "coordinator_to_backend" {
-  model_uuid = var.model_uuid
+  model = var.model
 
   application {
     name     = module.mimir_coordinator.app_name

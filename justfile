@@ -50,7 +50,7 @@ validate-terraform:
   if [ -z "${terraform}" ]; then echo "ERROR: please install terraform or opentofu"; exit 1; fi
   set -e; for repo in */; do (cd "$repo" && echo "Processing ${repo%/}..." && $terraform init -upgrade && $terraform validate) || exit 1; done
 
-# Run integration tests
+# Run solution tests
 [working-directory("./tests/integration")]
 integration *args='':
   uv run pytest -vv --capture=no --exitfirst "${args}"

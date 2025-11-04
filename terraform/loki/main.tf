@@ -1,6 +1,6 @@
 resource "juju_secret" "loki_s3_credentials_secret" {
-  model_uuid = var.model_uuid
-  name       = "loki_s3_credentials"
+  model = var.model
+  name  = "loki_s3_credentials"
   value = {
     access-key = var.s3_access_key
     secret-key = var.s3_secret_key
@@ -9,7 +9,7 @@ resource "juju_secret" "loki_s3_credentials_secret" {
 }
 
 resource "juju_access_secret" "loki_s3_secret_access" {
-  model_uuid = var.model_uuid
+  model = var.model
   applications = [
     juju_application.s3_integrator.name
   ]
@@ -24,7 +24,7 @@ resource "juju_application" "s3_integrator" {
     credentials = "secret:${juju_secret.loki_s3_credentials_secret.secret_id}"
   }, var.s3_integrator_config)
   constraints        = var.s3_integrator_constraints
-  model_uuid         = var.model_uuid
+  model              = var.model
   name               = var.s3_integrator_name
   storage_directives = var.s3_integrator_storage_directives
   trust              = true
@@ -38,18 +38,18 @@ resource "juju_application" "s3_integrator" {
 }
 
 module "loki_coordinator" {
-  source             = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform"
+  source             = "git::https://github.com/canonical/loki-coordinator-k8s-operator//terraform?ref=tf-provider-v0"
   app_name           = "loki"
   channel            = var.channel
   constraints        = var.anti_affinity ? "arch=amd64 tags=anti-pod.app.kubernetes.io/name=loki,anti-pod.topology-key=kubernetes.io/hostname" : var.coordinator_constraints
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.coordinator_revision
   storage_directives = var.coordinator_storage_directives
   units              = var.coordinator_units
 }
 
 module "loki_backend" {
-  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform?ref=tf-provider-v0"
   depends_on = [module.loki_coordinator]
 
   app_name    = var.backend_name
@@ -58,14 +58,14 @@ module "loki_backend" {
   config = merge({
     role-backend = true
   }, var.backend_config)
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
   units              = var.backend_units
 }
 
 module "loki_read" {
-  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform?ref=tf-provider-v0"
   depends_on = [module.loki_coordinator]
 
   app_name    = var.read_name
@@ -74,14 +74,14 @@ module "loki_read" {
   config = merge({
     role-read = true
   }, var.read_config)
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
   units              = var.read_units
 }
 
 module "loki_write" {
-  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform"
+  source     = "git::https://github.com/canonical/loki-worker-k8s-operator//terraform?ref=tf-provider-v0"
   depends_on = [module.loki_coordinator]
 
   app_name    = var.write_name
@@ -90,7 +90,7 @@ module "loki_write" {
   config = merge({
     role-write = true
   }, var.write_config)
-  model_uuid         = var.model_uuid
+  model              = var.model
   revision           = var.worker_revision
   storage_directives = var.worker_storage_directives
   units              = var.write_units
@@ -99,7 +99,7 @@ module "loki_write" {
 # -------------- # Integrations --------------
 
 resource "juju_integration" "coordinator_to_s3_integrator" {
-  model_uuid = var.model_uuid
+  model = var.model
   application {
     name     = juju_application.s3_integrator.name
     endpoint = "s3-credentials"
@@ -112,7 +112,7 @@ resource "juju_integration" "coordinator_to_s3_integrator" {
 }
 
 resource "juju_integration" "coordinator_to_backend" {
-  model_uuid = var.model_uuid
+  model = var.model
 
   application {
     name     = module.loki_coordinator.app_name
@@ -126,7 +126,7 @@ resource "juju_integration" "coordinator_to_backend" {
 }
 
 resource "juju_integration" "coordinator_to_read" {
-  model_uuid = var.model_uuid
+  model = var.model
 
   application {
     name     = module.loki_coordinator.app_name
@@ -140,7 +140,7 @@ resource "juju_integration" "coordinator_to_read" {
 }
 
 resource "juju_integration" "coordinator_to_write" {
-  model_uuid = var.model_uuid
+  model = var.model
 
   application {
     name     = module.loki_coordinator.app_name
